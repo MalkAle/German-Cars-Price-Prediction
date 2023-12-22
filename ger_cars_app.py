@@ -10,6 +10,7 @@ import requests
 from datetime import timedelta, date
 from dateutil.relativedelta import relativedelta
 
+
 # %%
 ## Functions
 @st.cache_data
@@ -20,8 +21,9 @@ def _load_data():
       loaded_data_ = load('complete_model.joblib')
       return loaded_data_
    except ImportError:
+      print('ERROR: Model import')
       st.error('Model load error', icon="🚨")
-
+      
 def _user_input_options(loaded_data_,model_):
    print('Executing _user_input_options')
    # This function creates select options for user input
@@ -106,11 +108,11 @@ def _write_prediction(prediction_,r2_score_,model_data_):
    print('Executing _write_prediction')
    # This fuction writes the prediction results
    if r2_score < 0.65:
-      st.error('Prediciton calculated! Model quality is poor.', icon="🚩")
+      st.error('Prediction calculated! Model quality is poor.', icon="🚩")
    elif r2_score >=0.65 and r2_score < 0.85:
-      st.warning('Prediciton calculated! Model quality is ok.',icon="⚠️")
+      st.warning('Prediction calculated! Model quality is ok.',icon="⚠️")
    else:
-      st.success('Prediciton calculated! Model quality is good.',icon="✅")
+      st.success('Prediction calculated! Model quality is good.',icon="✅")
    with st.container(border=True):
       st.write('## Predicted price:', prediction_, '€')
       st.write('R2 score for this prediction is', r2_score_, ', Mean Absolute Percentage Error for this prediction is', mape, '%')
@@ -128,7 +130,8 @@ def _search_images(query_,num_images_):
             'cx': search_engine_id_,
             'searchType': 'image',
             'imgType':'photo',
-            'num': 10} 
+            'num': 10,
+            } 
    images = []
    domains = []
    search_response_ = requests.get(search_engine_url_,params=params_)
@@ -148,17 +151,19 @@ def _search_images(query_,num_images_):
 @st.cache_data
 def _write_model_images(images_):
    # This function writes a row of model images in the page
+   print('Executing _write_model_images')
    try:
       col_names_images_ = [i for i in range(len(images_))]
       cols_images = st.columns(len(images_))
       for col in col_names_images_:
          cols_images[col].image(images_[col])
    except TypeError:
-      st.write('No images show')
+      None
 
 @st.cache_data
 def _write_3d_scatter(model_data_):
    # This function plots a 3D scatterplot for all the data of the model chosen by user
+   print('Executing _write_3d_scatter')
    with st.container(border=True):
       st.write('## Visual Represantation of Data for this Model')
       labels_ = {'mileage_in_km':'Mileage in km',
@@ -198,13 +203,13 @@ def _write_histogram(model_data_):
 
 if __name__ == "__main__":
    # Page intro
+   print('Executing main')
    st.set_page_config(page_title='Car Prices Prediction App for Gemany 2023',
                      layout='wide',
                      initial_sidebar_state="expanded",)
    st.title('Car Prices Prediction App for Gemany 2023')
    st.write('Based on the dataset from Kaggle.com (https://www.kaggle.com/datasets/wspirat/germany-used-cars-dataset-2023/)')
 
-   # %%
    # Some variable defintions 
    end_date = date(day=30,month=6,year=2023)
    num_images = 5
@@ -212,6 +217,7 @@ if __name__ == "__main__":
    ## Function calls
    # Load data
    loaded_data = _load_data()
+
    # Crate sidebar with user input
    (user_input,model_data) = _write_sidebar(loaded_data,end_date)
    # Get the ml model from the loaded data for the car model selected by user
@@ -232,3 +238,4 @@ if __name__ == "__main__":
    _write_3d_scatter(model_data)
 
 # %%
+   

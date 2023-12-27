@@ -1,0 +1,7 @@
+name: Run Python Script
+
+on:
+
+env:
+  API_KEY: ${{ secrets.API_KEY }}
+  SEARCH_ENGINE_ID: ${{ secrets.SEARCH_ENGINE_ID }}

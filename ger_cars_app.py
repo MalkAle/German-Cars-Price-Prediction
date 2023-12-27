@@ -149,9 +149,10 @@ def _search_images(query_,num_images_):
       st.write('No images to display',)
 
 @st.cache_data
-def _write_model_images(images_):
+def _write_model_images(images_,model_):
    # This function writes a row of model images in the page
    print('Executing _write_model_images')
+   st.write('## Google Images for', model_)
    try:
       col_names_images_ = [i for i in range(len(images_))]
       cols_images = st.columns(len(images_))
@@ -229,7 +230,7 @@ if __name__ == "__main__":
    # Gets urls of the photos from Google search for the car model selected by user
    images = _search_images(user_input['model'],num_images)
    # Displays images from image urls
-   _write_model_images(images)
+   _write_model_images(images,user_input['model'])
    # Writes calculated predictions for single datapoint
    _write_prediction(prediction,r2_score,model_data)
    # Plot a histogram with price distibution for the car model selected by user

@@ -17,15 +17,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: print secret
-        run: echo "secret"
+      - name: hello world
+        run: echo "hello alex"
         shell: bash
 
   goodbye:
     runs-on: ubuntu-latest
     steps:
       - name: print secret
-        run: echo "secret"
+        run: echo API_KEY
         shell: bash 
 
 

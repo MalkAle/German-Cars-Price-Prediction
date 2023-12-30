@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: print secret
-        run: echo secrets.API_KEY
+        run: echo ${{ secrets.API_KEY }}
         shell: bash 
 
 

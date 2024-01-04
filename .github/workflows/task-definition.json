@@ -1,9 +1,9 @@
 {
-    "family": "german_cars_app_task",
+    "taskDefinitionArn": "arn:aws:ecs:eu-central-1:541232450294:task-definition/german_cars_app:1",
     "containerDefinitions": [
         {
             "name": "german_cars_app",
-            "image": "https://hub.docker.com/repository/docker/agordon559/german_car_app",
+            "image": "public.ecr.aws/a3k1s0h7/german_cars_app",
             "cpu": 0,
             "portMappings": [
                 {
@@ -24,7 +24,7 @@
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-create-group": "true",
-                    "awslogs-group": "/ecs/german_cars_app_task",
+                    "awslogs-group": "/ecs/",
                     "awslogs-region": "eu-central-1",
                     "awslogs-stream-prefix": "ecs"
                 },
@@ -32,15 +32,51 @@
             }
         }
     ],
+    "family": "german_cars_app",
+    "taskRoleArn": "arn:aws:iam::541232450294:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::541232450294:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
     "requiresCompatibilities": [
         "FARGATE"
     ],
     "cpu": "1024",
-    "memory": "2048",
+    "memory": "3072",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
-    }
+    },
+    "registeredAt": "2024-01-04T12:10:22.207Z",
+    "registeredBy": "arn:aws:iam::541232450294:root",
+    "tags": []
 }

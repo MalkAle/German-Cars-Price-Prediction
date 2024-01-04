@@ -115,6 +115,7 @@ def _write_prediction(prediction_,r2_score_,model_data_):
       st.success('Prediction calculated! Model quality is good.',icon="✅")
    with st.container(border=True):
       st.write('## Predicted price:', prediction_, '€')
+      st.write('The prediction is calculated using K Nearest Neighbor Regression')
       st.write('R2 score for this prediction is', r2_score_, ', Mean Absolute Percentage Error for this prediction is', mape, '%')
       st.write('ML model is based on', len(model_data_) ,'samples.')
 

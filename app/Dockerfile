@@ -1,6 +1,6 @@
 FROM python:3.9-slim
 
-WORKDIR /app
+#WORKDIR /German-Cars-Price-Prediction
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -10,15 +10,22 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 #Remote repo
-RUN git clone https://github.com/MalkAle/German-Cars-Price-Prediction.git ./app
+#RUN git clone https://github.com/MalkAle/German-Cars-Price-Prediction.git .    
+RUN git clone --no-checkout https://github.com/MalkAle/German-Cars-Price-Prediction.git \
+    && cd German-Cars-Price-Prediction \
+    #&& git sparse-checkout init --cone \
+    && git sparse-checkout set app \
+    && git checkout @
+
+#WORKDIR /app
 
 #Local machine
 #COPY . .
 
-RUN pip3 install -r requirements.txt
+#RUN pip3 install -r requirements.txt
 
-EXPOSE 8501
+#EXPOSE 8501
 
 #HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-ENTRYPOINT ["streamlit", "run", "ger_cars_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+#CMD ["streamlit", "run", "ger_cars_app.py", "--server.port=8501", "--server.address=0.0.0.0"]

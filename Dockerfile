@@ -17,7 +17,7 @@ RUN git clone https://github.com/MalkAle/German-Cars-Price-Prediction.git .
 #    && git sparse-checkout set app \
 #    && git checkout @
 
-#WORKDIR /app
+#WORKDIR /German-Cars-Price-Prediction/app
 
 #Local machine
 #COPY . .

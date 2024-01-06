@@ -10,22 +10,26 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 #Remote repo
-RUN git clone https://github.com/MalkAle/German-Cars-Price-Prediction.git .    
-#RUN git clone --no-checkout https://github.com/MalkAle/German-Cars-Price-Prediction.git \
-#    && cd German-Cars-Price-Prediction \
-#    && git sparse-checkout init --cone \
-#    && git sparse-checkout set app \
-#    && git checkout @
+#Clone complete repo
+#RUN git clone https://github.com/MalkAle/German-Cars-Price-Prediction.git . 
+#Clone fist level files and the app folder only   
+RUN git clone --no-checkout https://github.com/MalkAle/German-Cars-Price-Prediction.git \
+    && cd German-Cars-Price-Prediction \
+    && git sparse-checkout init --cone \
+    && git sparse-checkout set app \
+    && git checkout @ 
+    #&& cd app
 
-#WORKDIR /German-Cars-Price-Prediction/app
 
 #Local machine
 #COPY . .
 
-#RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
-#EXPOSE 8501
+EXPOSE 8501
 
-#HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-#CMD ["streamlit", "run", "ger_cars_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+WORKDIR /German-Cars-Price-Prediction/app
+
+CMD ["streamlit", "run", "ger_cars_app.py", "--server.port=8501", "--server.address=0.0.0.0"]

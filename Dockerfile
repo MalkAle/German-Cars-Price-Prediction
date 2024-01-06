@@ -1,7 +1,5 @@
 FROM python:3.9-slim
 
-WORKDIR /German-Cars-Price-Prediction
-
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
@@ -18,11 +16,11 @@ RUN git clone --no-checkout https://github.com/MalkAle/German-Cars-Price-Predict
     && git sparse-checkout init --cone \
     && git sparse-checkout set app \
     && git checkout @ 
-    #&& cd app
-
 
 #Local machine
 #COPY . .
+
+WORKDIR /German-Cars-Price-Prediction
 
 RUN pip3 install -r requirements.txt
 

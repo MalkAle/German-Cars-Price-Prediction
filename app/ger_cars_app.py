@@ -146,8 +146,6 @@ def _search_images(query_,num_images_):
             if len(images)==num_images_:
                break
       return images
-   else:
-      st.write('No images to display',)
 
 @st.cache_data
 def _write_model_images(images_,model_):

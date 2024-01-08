@@ -9,6 +9,10 @@ on:
     branches: [ main ]
 
 env:
+  #Google
+  API_KEY: ${{ secrets.API_KEY }}
+  SEARCH_ENGINE_ID: ${{ secrets.SEARCH_ENGINE_ID }}
+  #AWS
   AWS_REGION : eu-central-1 #Change to reflect your Region
   ECR_REPOSITORY: german_cars_app 
   CONTAINER_NAME: german_cars_app
@@ -18,11 +22,12 @@ permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read    # This is required for actions/checkout
 jobs:
-  AssumeRoleAndCallIdentity:
+  BuildAndPush:
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v3
+
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:

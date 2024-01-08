@@ -1,68 +1,34 @@
-name: Run Python Script Workflow
+# This is a basic workflow to help you get started with Actions
+name: Connect to an AWS role from a GitHub repository
 
+# Controls when the action will run. Invokes the workflow on push events but only for the main branch
 on:
   push:
-    branches: 
-      - main
+    branches: [ main ]
   pull_request:
-    branches: 
-      - main
+    branches: [ main ]
 
 env:
-  #Google
-  API_KEY: ${{ secrets.API_KEY }}
-  SEARCH_ENGINE_ID: ${{ secrets.SEARCH_ENGINE_ID }}
-  #AWS
-  AWS_REGION: eu-central-1                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: german_cars_app           # set this to your Amazon ECR repository name
-  #ECS_SERVICE: german_cars_app                 # set this to your Amazon ECS service name
-  #ECS_CLUSTER: german_cars_cluster                 # set this to your Amazon ECS cluster name
-  #ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
-                                               # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: german_cars_app           # set this to the name of the container in the
-                                               # containerDefinitions section of your task definition
+  AWS_REGION : eu-central-1 #Change to reflect your Region
 
+# Permission can be added at job level or workflow level    
 permissions:
-  contents: read
-
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
 jobs:
   AssumeRoleAndCallIdentity:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Git clone the repository
-          uses: actions/checkout@v3
-        - name: configure aws credentials
-          uses: aws-actions/configure-aws-credentials@v3
-          with:
-            role-to-assume: arn:aws:iam::541232450294:role/german_cars_role #change to reflect your IAM role’s ARN
-            role-session-name: german_cars_role
-            aws-region: ${{ env.AWS_REGION }}
-        # Hello from AWS: WhoAmI
-        - name: Sts GetCallerIdentity
-          run: |
-            aws sts get-caller-identity
-
-  deploy:
-    name: Deploy
     runs-on: ubuntu-latest
-    environment: production
-
     steps:
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: german_cars_app
-        IMAGE_TAG: latest
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        #echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::541232450294:role/german_cars_role #change to reflect your IAM role’s ARN
+          role-session-name: german_cars_role
+          aws-region: ${{ env.AWS_REGION }}
+      # Hello from AWS: WhoAmI
+      - name: Sts GetCallerIdentity
+        run: |
+          aws sts get-caller-identity
 

@@ -10,6 +10,8 @@ on:
 
 env:
   AWS_REGION : eu-central-1 #Change to reflect your Region
+  ECR_REPOSITORY: german_cars_app 
+  CONTAINER_NAME: german_cars_app
 
 # Permission can be added at job level or workflow level    
 permissions:
@@ -32,3 +34,20 @@ jobs:
         run: |
           aws sts get-caller-identity
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: german_cars_app
+          IMAGE_TAG: latest
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          #echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

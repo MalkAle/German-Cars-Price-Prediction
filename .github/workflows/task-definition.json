@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "name": "german_cars_app",
-            "image": "public.ecr.aws/a3k1s0h7/german_cars_app",
+            "image": "public.ecr.aws/a3k1s0h7/german_cars_app:latest",
             "cpu": 0,
             "portMappings": [
                 {

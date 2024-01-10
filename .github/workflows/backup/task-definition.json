@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:eu-central-1:541232450294:task-definition/german_cars_app:1",
+    "taskDefinitionArn": "arn:aws:ecs:eu-central-1:541232450294:task-definition/german_cars_app:2",
     "containerDefinitions": [
         {
             "name": "german_cars_app",
-            "image": "public.ecr.aws/a3k1s0h7/german_cars_app:latest",
+            "image": "541232450294.dkr.ecr.eu-central-1.amazonaws.com/german_cars_app:latest",
             "cpu": 0,
             "portMappings": [
                 {
@@ -36,7 +36,7 @@
     "taskRoleArn": "arn:aws:iam::541232450294:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::541232450294:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 1,
+    "revision": 2,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -47,10 +47,16 @@
             "name": "ecs.capability.execution-role-awslogs"
         },
         {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
         },
         {
             "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
@@ -76,7 +82,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-01-04T12:10:22.207Z",
+    "registeredAt": "2024-01-08T17:56:09.671Z",
     "registeredBy": "arn:aws:iam::541232450294:root",
     "tags": []
 }

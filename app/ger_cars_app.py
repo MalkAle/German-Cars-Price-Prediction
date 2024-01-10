@@ -165,7 +165,7 @@ def _write_3d_scatter(model_data_):
    # This function plots a 3D scatterplot for all the data of the model chosen by user
    print('Executing _write_3d_scatter')
    with st.container(border=True):
-      st.write('## Visual Represantation of Data for this Model')
+      st.write('## Visual Representation of Data for this Model')
       labels_ = {'mileage_in_km':'Mileage in km',
                'price_in_euro':'Price in €',
                'car_age':'Car Age',
@@ -209,6 +209,7 @@ if __name__ == "__main__":
                      initial_sidebar_state="expanded",)
    st.title('Car Prices Prediction App for Gemany 2023')
    st.write('Based on the dataset from Kaggle.com (https://www.kaggle.com/datasets/wspirat/germany-used-cars-dataset-2023/)')
+   st.write('See the Github Repository: https://github.com/MalkAle/German-Cars-Price-Prediction')
 
    # Some variable defintions 
    end_date = date(day=30,month=6,year=2023)

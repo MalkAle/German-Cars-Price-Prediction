@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:eu-central-1:541232450294:task-definition/german_cars_app:2",
+    "taskDefinitionArn": "arn:aws:ecs:eu-central-1:339713185538:task-definition/german_cars_app:1",
     "containerDefinitions": [
         {
             "name": "german_cars_app",
-            "image": "541232450294.dkr.ecr.eu-central-1.amazonaws.com/german_cars_app:latest",
+            "image": "339713185538.dkr.ecr.eu-central-1.amazonaws.com/german_cars_app",
             "cpu": 0,
             "portMappings": [
                 {
@@ -24,19 +24,19 @@
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-create-group": "true",
-                    "awslogs-group": "/ecs/",
+                    "awslogs-group": "/ecs/german_cars_app",
                     "awslogs-region": "eu-central-1",
                     "awslogs-stream-prefix": "ecs"
                 },
                 "secretOptions": []
-            }
+            },
+            "systemControls": []
         }
     ],
     "family": "german_cars_app",
-    "taskRoleArn": "arn:aws:iam::541232450294:role/ecsTaskExecutionRole",
-    "executionRoleArn": "arn:aws:iam::541232450294:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::339713185538:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 2,
+    "revision": 1,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -51,9 +51,6 @@
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.task-iam-role"
         },
         {
             "name": "ecs.capability.execution-role-ecr-pull"
@@ -82,7 +79,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-01-08T17:56:09.671Z",
-    "registeredBy": "arn:aws:iam::541232450294:root",
+    "registeredAt": "2024-05-05T19:36:21.333Z",
+    "registeredBy": "arn:aws:iam::339713185538:root",
     "tags": []
 }

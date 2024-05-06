@@ -33,8 +33,8 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::541232450294:role/german_cars_role #change to reflect your IAM role’s ARN
-          role-session-name: german_cars_role
+          role-to-assume: arn:aws:iam::339713185538:role/Github-role #change to reflect your IAM role’s ARN
+          role-session-name: Github_actions
           aws-region: ${{ env.AWS_REGION }}
       # Hello from AWS: WhoAmI
       - name: Sts GetCallerIdentity

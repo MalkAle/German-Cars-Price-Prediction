@@ -24,19 +24,22 @@ permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read    # This is required for actions/checkout
 jobs:
-  BuildAndPush:
+  CloneRepoGit:
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
 
+  ConfigureAWSCreds:
+    runs-on: ubuntu-latest
+    needs: CloneRepoGit
+    steps:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::339713185538:role/Github-role #change to reflect your IAM role’s ARN
           role-session-name: Github-role #change as fits
           aws-region: ${{ env.AWS_REGION }}
-      # Hello from AWS: WhoAmI
       - name: Sts GetCallerIdentity
         run: |
           aws sts get-caller-identity
@@ -44,21 +47,28 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+  BuildPushECR:
+    runs-on: ubuntu-latest
+    needs: ConfigureAWSCreds
+    steps:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
+          # Build a docker container and push it to ECR 
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        with:
+          secrets: |
+            "api_key=${{ secrets.API_KEY }}"
+            "search_engine_id=${{ secrets.SEARCH_ENGINE_ID }}"
  
-  DeployECS:
+  RenderTaskDef:
     runs-on: ubuntu-latest
+    needs: BuildAndPushECR
     steps:
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
@@ -68,6 +78,10 @@ jobs:
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
 
+  DeployECS:
+    runs-on: ubuntu-latest
+    needs: RenderTaskDef
+    steps:
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:

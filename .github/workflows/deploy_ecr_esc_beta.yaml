@@ -68,7 +68,7 @@ jobs:
  
   RenderTaskDef:
     runs-on: ubuntu-latest
-    needs: BuildAndPushECR
+    needs: BuildPushECR
     steps:
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def

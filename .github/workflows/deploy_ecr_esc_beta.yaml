@@ -15,7 +15,7 @@ env:
   ECR_REPOSITORY: german_cars_app 
   CONTAINER_NAME: "german_cars_app"
   ECS_SERVICE: german_cars_app                 # set this to your Amazon ECS service name
-  ECS_CLUSTER: german_cars                # set this to your Amazon ECS cluster name
+  ECS_CLUSTER: german_cars_app                # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: .github/workflows/task-definition.json
   #IMAGE_TAG: latest
 

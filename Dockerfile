@@ -1,5 +1,10 @@
 FROM python:3.9-slim
 
+RUN --mount=type=secret,id=api_key \
+    --mount=type=secret,id=search_engine_id \
+    echo "api_key=$(cat /run/secrets/api_key)" >> .env \
+    && echo "search_engine_id=$(cat /run/secrets/search_engine_id)" >> .env
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \

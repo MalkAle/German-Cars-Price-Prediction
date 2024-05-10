@@ -121,7 +121,7 @@ def _write_prediction(prediction_,r2_score_,model_data_):
 
 @st.cache_data
 def _search_images(query_,num_images_):
-   # This fuction searches for the model's image using google custom search engine
+   # This function searches for the model's image using google custom search engine
    print('Executing _search_images')
    api_key_ = os.getenv('API_KEY')
    search_engine_id_ = os.getenv('SEARCH_ENGINE_ID')
@@ -138,7 +138,7 @@ def _search_images(query_,num_images_):
    search_response_ = requests.get(search_engine_url_,params=params_)
    if search_response_.status_code == 200:
       search_results_ = search_response_.json()['items']
-      # This section prevents duplicates by allowing to dowload only one image form every domain
+      # This section prevents duplicates by allowing to download only one image form every domain
       for item in search_results_:
          if item['link'].split('/')[2] not in domains:
             images.append(item['link'])
@@ -208,7 +208,7 @@ if __name__ == "__main__":
                      layout='wide',
                      initial_sidebar_state="expanded",)
    st.title('Car Prices Prediction App for Gemany 2023')
-   st.write('Version 1.0.0')
+   st.write('Version 1.1.0')
    st.write('Based on the dataset from Kaggle.com (https://www.kaggle.com/datasets/wspirat/germany-used-cars-dataset-2023/)')
    st.write('See the Github Repository: https://github.com/MalkAle/German-Cars-Price-Prediction')
 

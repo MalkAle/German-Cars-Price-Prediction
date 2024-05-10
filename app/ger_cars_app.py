@@ -208,6 +208,7 @@ if __name__ == "__main__":
                      layout='wide',
                      initial_sidebar_state="expanded",)
    st.title('Car Prices Prediction App for Gemany 2023')
+   st.write('Version 1.0.0')
    st.write('Based on the dataset from Kaggle.com (https://www.kaggle.com/datasets/wspirat/germany-used-cars-dataset-2023/)')
    st.write('See the Github Repository: https://github.com/MalkAle/German-Cars-Price-Prediction')
 

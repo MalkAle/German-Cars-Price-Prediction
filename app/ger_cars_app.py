@@ -231,13 +231,13 @@ if __name__ == "__main__":
    # Gets urls of the photos from Google search for the car model selected by user
    images = _search_images(user_input['model'],num_images)
    # Displays images from image urls
-   _write_model_images(images,user_input['model'])
-   # Writes calculated predictions for single datapoint
-   _write_prediction(prediction,r2_score,model_data)
-   # Plot a histogram with price distibution for the car model selected by user
-   _write_histogram(model_data)
-   # Plots a 3D scatteplot for all the data for the car model selected by user
-   _write_3d_scatter(model_data)
+   # _write_model_images(images,user_input['model'])
+   # # Writes calculated predictions for single datapoint
+   # _write_prediction(prediction,r2_score,model_data)
+   # # Plot a histogram with price distibution for the car model selected by user
+   # _write_histogram(model_data)
+   # # Plots a 3D scatteplot for all the data for the car model selected by user
+   # _write_3d_scatter(model_data)
 
 # %%
    

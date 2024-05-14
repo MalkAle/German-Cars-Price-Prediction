@@ -1,5 +1,6 @@
 # %%
 import os
+from dotenv import load_dotenv
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -123,6 +124,7 @@ def _write_prediction(prediction_,r2_score_,model_data_):
 def _search_images(query_,num_images_):
    # This function searches for the model's image using google custom search engine
    print('Executing _search_images')
+   load_dotenv()
    api_key_ = os.getenv('API_KEY')
    search_engine_id_ = os.getenv('SEARCH_ENGINE_ID')
    search_engine_url_ = 'https://www.googleapis.com/customsearch/v1'
@@ -146,6 +148,9 @@ def _search_images(query_,num_images_):
             if len(images)==num_images_:
                break
       return images
+   else:
+      st.write("Error",search_response_.status_code)
+      
 
 @st.cache_data
 def _write_model_images(images_,model_):
@@ -208,7 +213,7 @@ if __name__ == "__main__":
                      layout='wide',
                      initial_sidebar_state="expanded",)
    st.title('Car Prices Prediction App for Gemany 2023')
-   st.write('Version 1.1.0')
+   #st.write('Version 1.1.0')
    st.write('Based on the dataset from Kaggle.com (https://www.kaggle.com/datasets/wspirat/germany-used-cars-dataset-2023/)')
    st.write('See the Github Repository: https://github.com/MalkAle/German-Cars-Price-Prediction')
 
@@ -231,13 +236,13 @@ if __name__ == "__main__":
    # Gets urls of the photos from Google search for the car model selected by user
    images = _search_images(user_input['model'],num_images)
    # Displays images from image urls
-   # _write_model_images(images,user_input['model'])
-   # # Writes calculated predictions for single datapoint
-   # _write_prediction(prediction,r2_score,model_data)
-   # # Plot a histogram with price distibution for the car model selected by user
-   # _write_histogram(model_data)
-   # # Plots a 3D scatteplot for all the data for the car model selected by user
-   # _write_3d_scatter(model_data)
+   _write_model_images(images,user_input['model'])
+   # Writes calculated predictions for single datapoint
+   _write_prediction(prediction,r2_score,model_data)
+   # Plot a histogram with price distibution for the car model selected by user
+   _write_histogram(model_data)
+   # Plots a 3D scatteplot for all the data for the car model selected by user
+   _write_3d_scatter(model_data)
 
 # %%
    

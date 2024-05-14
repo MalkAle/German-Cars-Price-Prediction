@@ -1,0 +1,75 @@
+name: Connect to an AWS role from a GitHub repository
+
+# Controls when the action will run. Invokes the workflow on push events but only for the main branch
+on:
+  push:
+    branches: [ main ]
+
+env:
+  #Google
+  API_KEY: ${{ secrets.API_KEY }}
+  SEARCH_ENGINE_ID: ${{ secrets.SEARCH_ENGINE_ID }}
+  #AWS
+  AWS_REGION : eu-central-1 #Change to reflect your Region
+  ECR_REPOSITORY: german_cars_app 
+  CONTAINER_NAME: "german_cars_app"
+  ECS_SERVICE: german_cars_app                 # set this to your Amazon ECS service name
+  ECS_CLUSTER: german_cars_app                # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION: .github/workflows/task-definition.json
+  #IMAGE_TAG: latest
+
+# Permission can be added at job level or workflow level    
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+jobs:
+  BuildAndPushECR:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::339713185538:role/Github-role #change to reflect your IAM role’s ARN
+          role-session-name: Github-role #change
+          aws-region: ${{ env.AWS_REGION }}
+      # Hello from AWS: WhoAmI
+      - name: Sts GetCallerIdentity
+        run: |
+          aws sts get-caller-identity
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build --secret id=api_key,env=API_KEY --secret id=search_engine_id,env=SEARCH_ENGINE_ID --no-cache -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+ 
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true

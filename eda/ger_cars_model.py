@@ -20,10 +20,11 @@ if __name__ == "__main__":
     car_data_ML = pd.read_csv('car_data_ML.csv')
 
     # %%
-    # For testing only
-    #car_data_ML = car_data_ML[car_data_ML['brand']=='Volkswagen']
+    # Creating a slice for different selection of cars, complete model otherwise
+    car_data_ML = car_data_ML[car_data_ML['brand']=='Volkswagen']
     #car_data_ML = car_data_ML[car_data_ML['model']=='Fiat Scudo']
     #car_data_ML = car_data_ML[(car_data_ML['model']=='Alfa Romeo Mito')]
+    #car_data_ML = car_data_ML[car_data_ML['brand'].isin(['Volkswagen', 'BMW', 'Mercedes Benz'])]
 
     # %%
     models = car_data_ML['model'].unique()
@@ -36,12 +37,14 @@ if __name__ == "__main__":
     bad_models = []
     # %%
     for model in models:
+
         # Creating the slice from model sub-dataset
         car_data_ML_slice = pd.DataFrame(car_data_ML[car_data_ML['model']==model])
 
-        # Dropping "Unnamed" and "brand columns
+        # Dropping "Unnamed" and "brand" columns
         car_data_ML_slice.drop(columns=['Unnamed: 0','brand','model'],inplace=True)
 
+        print(car_data_ML_slice.head())
         # Separating dataset into train and test data
         y = car_data_ML_slice['price_in_euro']
         X = car_data_ML_slice.drop(columns=['price_in_euro'])
@@ -98,3 +101,5 @@ if __name__ == "__main__":
     print('Model saved\n\n')
 
 
+
+# %%

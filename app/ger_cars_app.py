@@ -215,6 +215,7 @@ if __name__ == "__main__":
    st.title('Car Prices Prediction App for Gemany 2023')
    #st.write('Version 1.1.0')
    st.write('Based on the dataset from Kaggle.com (https://www.kaggle.com/datasets/wspirat/germany-used-cars-dataset-2023/)')
+   st.warning('This is a slice from the complete model having only Volkswagen as the only manufacturer to reduce cost of deployment',icon="⚠️")
    st.write('See the Github Repository: https://github.com/MalkAle/German-Cars-Price-Prediction')
 
    # Some variable defintions 

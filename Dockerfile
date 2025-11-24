@@ -1,11 +1,11 @@
 FROM python:3.9-slim
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
-    software-properties-common \
     git \
     && rm -rf /var/lib/apt/lists/*
+
 
 RUN --mount=type=secret,id=api_key \
     --mount=type=secret,id=search_engine_id \

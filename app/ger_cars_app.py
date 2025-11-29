@@ -5,6 +5,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from joblib import load
+from pathlib import Path
 import plotly.express as px
 from sigfig import round as rd_sigfig
 import requests
@@ -13,13 +14,22 @@ from dateutil.relativedelta import relativedelta
 
 
 # %%
+# Directory containing this file: /german_cars/app
+CURRENT_DIR = Path(__file__).resolve().parent
+
+# Project root: /german_cars
+PROJECT_ROOT = CURRENT_DIR.parent
+
+# Path to model file: /german_cars/eda/complete_model.joblib
+MODEL_PATH = PROJECT_ROOT / "eda" / "complete_model.joblib"
+
 ## Functions
 @st.cache_data
 def _load_data():
    # This function loads the data for all car models
    print('Executing _load_data')
    try:
-      loaded_data_ = load('complete_model.joblib')
+      loaded_data_ = load(MODEL_PATH)
       return loaded_data_
    except ImportError:
       print('ERROR: Model import')

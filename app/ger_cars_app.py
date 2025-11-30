@@ -16,10 +16,8 @@ from dateutil.relativedelta import relativedelta
 # %%
 # Directory containing this file: /german_cars/app
 CURRENT_DIR = Path(__file__).resolve().parent
-
 # Project root: /german_cars
 PROJECT_ROOT = CURRENT_DIR.parent
-
 # Path to model file: /german_cars/eda/complete_model.joblib
 MODEL_PATH = PROJECT_ROOT / "eda" / "complete_model.joblib"
 

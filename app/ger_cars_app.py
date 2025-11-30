@@ -16,10 +16,8 @@ from dateutil.relativedelta import relativedelta
 # %%
 # Directory containing this file: /german_cars/app
 CURRENT_DIR = Path(__file__).resolve().parent
-
 # Project root: /german_cars
 PROJECT_ROOT = CURRENT_DIR.parent
-
 # Path to model file: /german_cars/eda/complete_model.joblib
 MODEL_PATH = PROJECT_ROOT / "eda" / "complete_model.joblib"
 
@@ -134,6 +132,7 @@ def _write_prediction(prediction_,r2_score_,model_data_):
 def _search_images(query_,num_images_):
    # This function searches for the model's image using google custom search engine
    print('Executing _search_images')
+   #Loading secrets from environment
    load_dotenv()
    api_key_ = os.getenv('API_KEY')
    search_engine_id_ = os.getenv('SEARCH_ENGINE_ID')

@@ -134,6 +134,7 @@ def _write_prediction(prediction_,r2_score_,model_data_):
 def _search_images(query_,num_images_):
    # This function searches for the model's image using google custom search engine
    print('Executing _search_images')
+   #Loading secrets from environment
    load_dotenv()
    api_key_ = os.getenv('API_KEY')
    search_engine_id_ = os.getenv('SEARCH_ENGINE_ID')

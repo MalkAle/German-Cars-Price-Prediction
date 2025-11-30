@@ -7,14 +7,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
   && rm -rf /var/lib/apt/lists/*
 
+RUN --mount=type=secret,id=api_key \ 
+    --mount=type=secret,id=search_engine_id \ 
+    echo "API_KEY=$(cat /run/secrets/api_key)" >> .env && \ 
+    echo "SEARCH_ENGINE_ID=$(cat /run/secrets/search_engine_id)" >> .env
+
 # Project root inside the container
 WORKDIR /german_cars
 
-# Install dependencies first
+# Install dependencies
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Copy folders
+# Copy project folders
 COPY app ./app
 COPY eda ./eda
 
@@ -22,5 +27,5 @@ EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
 
-# Run Streamlit app from the project root (no need for app/ CWD anymore)
+# Run Streamlit from project root; app handles model path via Path(__file__)
 CMD ["streamlit", "run", "app/ger_cars_app.py", "--server.port=8501", "--server.address=0.0.0.0"]

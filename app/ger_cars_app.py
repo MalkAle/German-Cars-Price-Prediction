@@ -1,4 +1,3 @@
-# %%
 import os
 from dotenv import load_dotenv
 import streamlit as st
@@ -13,7 +12,6 @@ from datetime import timedelta, date
 from dateutil.relativedelta import relativedelta
 
 
-# %%
 # Directory containing this file: /german_cars/app
 CURRENT_DIR = Path(__file__).resolve().parent
 # Project root: /german_cars
@@ -25,16 +23,13 @@ MODEL_PATH = PROJECT_ROOT / "eda" / "complete_model.joblib"
 @st.cache_data
 def _load_data():
    # This function loads the data for all car models
-   print('Executing _load_data')
    try:
       loaded_data_ = load(MODEL_PATH)
       return loaded_data_
    except (ImportError, FileNotFoundError):
-      print('ERROR: Model import')
       st.error('Model load error', icon="🚨")
       
 def _user_input_options(loaded_data_,model_):
-   print('Executing _user_input_options')
    # This function creates select options for user input
    user_input_options_ = {}
    model_data_ = _model_data(model_,loaded_data_)
@@ -53,7 +48,6 @@ def _user_input_options(loaded_data_,model_):
    return user_input_options_
 
 def _model_data(model_,loaded_data_):
-   print('Executing _model_data')
    # This function fishes the model-specific data for from the complete loaded data and sets datatypes
    model_data_ = loaded_data_['models'][model_]['model_data']
    return model_data_.astype({'price_in_euro': 'int',
@@ -61,7 +55,6 @@ def _model_data(model_,loaded_data_):
                               'mileage_in_km':'int'})
 
 def _write_sidebar(loaded_data_,end_date_):
-   print('Executing _write_sidebar')
    # This function writes the sidebar and gets user inputs
    with st.sidebar:
       st.header('Car Data')
@@ -85,7 +78,6 @@ def _write_sidebar(loaded_data_,end_date_):
       return (user_input_,model_data_)
 
 def _ml_model(model_,loaded_data_):
-   print('Executing _ml_model')
    # This function retrieves the ml model and the model metrics from loaded data
    ML_model_ = loaded_data_['models'][model_]['ml_model']
    r2_score_ = np.round(loaded_data_['models'][model_]['r2'],decimals=2)
@@ -93,14 +85,12 @@ def _ml_model(model_,loaded_data_):
    return (ML_model_,r2_score_,mape_)  
 
 def _car_age(end_date_,registration_date_):
-   print('Executing _car_age')
    # This function calculates the car age from registration date
    delta_ = relativedelta(end_date_, registration_date_)
    car_age_ = (delta_.years*12 + delta_.months)/12
    return car_age_
 
 def _datapoint(user_input_,model_data_,end_date_):
-   print('Executing _datapoint')
    # This fuction creates a single datapoint from user input 
    X_ = model_data_.drop(columns=['price_in_euro'])
    X_keys_ = np.array(X_.keys().to_list())
@@ -114,7 +104,6 @@ def _datapoint(user_input_,model_data_,end_date_):
    return X_
 
 def _write_prediction(prediction_,r2_score_,model_data_,mape_):
-   print('Executing _write_prediction')
    # This fuction writes the prediction results
    if r2_score_ < 0.65:
       st.error('Prediction calculated! Model quality is poor.', icon="🚩")
@@ -131,7 +120,6 @@ def _write_prediction(prediction_,r2_score_,model_data_,mape_):
 @st.cache_data
 def _search_images(query_,num_images_):
    # This function searches for the model's image using google custom search engine
-   print('Executing _search_images')
    #Loading secrets from environment
    load_dotenv()
    api_key_ = os.getenv('API_KEY')
@@ -163,7 +151,6 @@ def _search_images(query_,num_images_):
 
 def _write_model_images(images_,model_):
    # This function writes a row of model images in the page
-   print('Executing _write_model_images')
    st.write('## Google Images for', model_)
    try:
       col_names_images_ = [i for i in range(len(images_))]
@@ -175,7 +162,6 @@ def _write_model_images(images_,model_):
 
 def _write_3d_scatter(model_data_):
    # This function plots a 3D scatterplot for all the data of the model chosen by user
-   print('Executing _write_3d_scatter')
    with st.container(border=True):
       st.write('## Visual Representation of Data for this Model')
       labels_ = {'mileage_in_km':'Mileage in km',
@@ -210,15 +196,13 @@ def _write_histogram(model_data_):
                            labels=labels_)
 
       st.plotly_chart(fig_1, use_container_width=True)
-# %% 
 
 if __name__ == "__main__":
    # Page intro
-   print('Executing main')
-   st.set_page_config(page_title='Car Prices Prediction App for Gemany 2023',
+   st.set_page_config(page_title='Car Prices Prediction App for Germany 2023',
                      layout='wide',
                      initial_sidebar_state="expanded",)
-   st.title('Car Prices Prediction App for Gemany 2023')
+   st.title('Car Prices Prediction App for Germany 2023')
    #st.write('Version 1.1.0')
    st.write('Based on the dataset from Kaggle.com (https://www.kaggle.com/datasets/wspirat/germany-used-cars-dataset-2023/)')
    st.warning('This is a slice from the complete model having only Volkswagen as the only manufacturer to reduce cost of deployment',icon="⚠️")
@@ -250,6 +234,3 @@ if __name__ == "__main__":
    _write_histogram(model_data)
    # Plots a 3D scatteplot for all the data for the car model selected by user
    _write_3d_scatter(model_data)
-
-# %%
-   

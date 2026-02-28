@@ -7,4 +7,8 @@ test
 German_Cars_Key.pem
 awscliv2.zip
 
+# Model and data files (large — do not commit)
+*.joblib
+eda/car_data*.csv
+
 

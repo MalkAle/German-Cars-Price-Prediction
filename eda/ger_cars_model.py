@@ -20,12 +20,6 @@ if __name__ == "__main__":
     car_data_ML = pd.read_csv('car_data_ML.csv')
 
     # %%
-    # Creating a slice for different selection of cars, complete model otherwise
-    car_data_ML = car_data_ML[car_data_ML['brand']=='Volkswagen']
-    #car_data_ML = car_data_ML[car_data_ML['model']=='Fiat Scudo']
-    #car_data_ML = car_data_ML[(car_data_ML['model']=='Alfa Romeo Mito')]
-    #car_data_ML = car_data_ML[car_data_ML['brand'].isin(['Volkswagen', 'BMW', 'Mercedes Benz'])]
-
     # %%
     models = car_data_ML['model'].unique()
 

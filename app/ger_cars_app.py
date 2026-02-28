@@ -68,7 +68,7 @@ def _write_sidebar(loaded_data_,end_date_):
       st.markdown('Please provide input variables for the price prediction below')
       user_input_ = {}
       models_ = loaded_data_['models'] #creates list of all car models in the loaded data
-      user_input_['model'] = st.sidebar.selectbox('Model',models_) #saves car model chosen by user
+      user_input_['model'] = st.selectbox('Model',models_) #saves car model chosen by user
       model_data_ = _model_data(user_input_['model'],loaded_data_) #picks the data for the car model choses by user
       user_input_options_ = _user_input_options(loaded_data_,user_input_['model']) #creates input options for user based in the chosen car model
       user_input_['power'] = st.selectbox('Power HP',user_input_options_['powers'])
@@ -81,7 +81,7 @@ def _write_sidebar(loaded_data_,end_date_):
                                           value=end_date_,
                                           min_value=start_date_,
                                           max_value=end_date_)
-      user_input_['mileage'] = st.sidebar.selectbox('Mileage in km',user_input_options_['mileage_intervals'])
+      user_input_['mileage'] = st.selectbox('Mileage in km',user_input_options_['mileage_intervals'])
       return (user_input_,model_data_)
 
 def _ml_model(model_,loaded_data_):
@@ -161,7 +161,6 @@ def _search_images(query_,num_images_):
       st.write("Error",search_response_.status_code)
       
 
-@st.cache_data
 def _write_model_images(images_,model_):
    # This function writes a row of model images in the page
    print('Executing _write_model_images')
@@ -174,7 +173,6 @@ def _write_model_images(images_,model_):
    except TypeError:
       None
 
-@st.cache_data
 def _write_3d_scatter(model_data_):
    # This function plots a 3D scatterplot for all the data of the model chosen by user
    print('Executing _write_3d_scatter')
@@ -201,7 +199,6 @@ def _write_3d_scatter(model_data_):
       fig.update_layout(height=800)
       st.plotly_chart(fig,use_container_width=True)
 
-@st.cache_data
 def _write_histogram(model_data_):
    # This function plots a histogram of prices for the car model chosen by user
    with st.container(border=True):

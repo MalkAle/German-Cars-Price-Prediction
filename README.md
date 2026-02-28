@@ -12,8 +12,6 @@ A Streamlit web application that predicts used car prices in Germany using K-Nea
 
 [Germany Used Cars Dataset 2023](https://www.kaggle.com/datasets/wspirat/germany-used-cars-dataset-2023/) — available on Kaggle.
 
-> **Note:** The deployed model includes Volkswagen models only to reduce deployment cost. The full dataset covers multiple German manufacturers.
-
 ## Project Structure
 
 ```

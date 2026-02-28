@@ -2,6 +2,12 @@
 
 A Streamlit web application that predicts used car prices in Germany using K-Nearest Neighbor regression, trained on a 2023 Kaggle dataset.
 
+**Live deployment:** http://german-cars-app-550107855.eu-central-1.elb.amazonaws.com/
+
+<img src="images/img1.png" alt="image" width="80%" height="auto" style="display: block; margin: 10px auto">
+<img src="images/img2.png" alt="image" width="80%" height="auto" style="display: block; margin: 10px auto">
+<img src="images/img3.png" alt="image" width="80%" height="auto" style="display: block; margin: 10px auto">
+
 ## Data Source
 
 [Germany Used Cars Dataset 2023](https://www.kaggle.com/datasets/wspirat/germany-used-cars-dataset-2023/) — available on Kaggle.

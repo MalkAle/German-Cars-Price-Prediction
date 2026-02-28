@@ -29,7 +29,7 @@ def _load_data():
    try:
       loaded_data_ = load(MODEL_PATH)
       return loaded_data_
-   except ImportError:
+   except (ImportError, FileNotFoundError):
       print('ERROR: Model import')
       st.error('Model load error', icon="🚨")
       
@@ -67,18 +67,18 @@ def _write_sidebar(loaded_data_,end_date_):
       st.header('Car Data')
       st.markdown('Please provide input variables for the price prediction below')
       user_input_ = {}
-      models_ = loaded_data['models'] #creates list of all car models in the loaded data
+      models_ = loaded_data_['models'] #creates list of all car models in the loaded data
       user_input_['model'] = st.sidebar.selectbox('Model',models_) #saves car model chosen by user
       model_data_ = _model_data(user_input_['model'],loaded_data_) #picks the data for the car model choses by user
       user_input_options_ = _user_input_options(loaded_data_,user_input_['model']) #creates input options for user based in the chosen car model
       user_input_['power'] = st.selectbox('Power HP',user_input_options_['powers'])
-      user_input_['fuel_type'] = st.selectbox('Transmission',user_input_options_['fuel_types'])
+      user_input_['fuel_type'] = st.selectbox('Fuel Type',user_input_options_['fuel_types'])
       user_input_['transmission_type'] = st.selectbox('Transmission',user_input_options_['transmission_types'])
       car_age_max_ = max(model_data_['car_age'])
       timedelta_max_ = timedelta(days=car_age_max_*365)
       start_date_ = end_date_ - timedelta_max_
       user_input_['registration_date'] = st.date_input('Registration Date',
-                                          value=end_date,
+                                          value=end_date_,
                                           min_value=start_date_,
                                           max_value=end_date_)
       user_input_['mileage'] = st.sidebar.selectbox('Mileage in km',user_input_options_['mileage_intervals'])
@@ -113,19 +113,19 @@ def _datapoint(user_input_,model_data_,end_date_):
    X_ = pd.DataFrame(data=X_values_,columns=X_keys_)
    return X_
 
-def _write_prediction(prediction_,r2_score_,model_data_):
+def _write_prediction(prediction_,r2_score_,model_data_,mape_):
    print('Executing _write_prediction')
    # This fuction writes the prediction results
-   if r2_score < 0.65:
+   if r2_score_ < 0.65:
       st.error('Prediction calculated! Model quality is poor.', icon="🚩")
-   elif r2_score >=0.65 and r2_score < 0.85:
+   elif r2_score_ >=0.65 and r2_score_ < 0.85:
       st.warning('Prediction calculated! Model quality is ok.',icon="⚠️")
    else:
       st.success('Prediction calculated! Model quality is good.',icon="✅")
    with st.container(border=True):
       st.write('## Predicted price:', prediction_, '€')
       st.write('The prediction is calculated using K Nearest Neighbor Regression')
-      st.write('R2 score for this prediction is', r2_score_, ', Mean Absolute Percentage Error for this prediction is', mape, '%')
+      st.write('R2 score for this prediction is', r2_score_, ', Mean Absolute Percentage Error for this prediction is', mape_, '%')
       st.write('ML model is based on', len(model_data_) ,'samples.')
 
 @st.cache_data
@@ -248,7 +248,7 @@ if __name__ == "__main__":
    # Displays images from image urls
    _write_model_images(images,user_input['model'])
    # Writes calculated predictions for single datapoint
-   _write_prediction(prediction,r2_score,model_data)
+   _write_prediction(prediction,r2_score,model_data,mape)
    # Plot a histogram with price distibution for the car model selected by user
    _write_histogram(model_data)
    # Plots a 3D scatteplot for all the data for the car model selected by user

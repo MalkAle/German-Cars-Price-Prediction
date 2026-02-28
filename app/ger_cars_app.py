@@ -91,16 +91,15 @@ def _car_age(end_date_,registration_date_):
    return car_age_
 
 def _datapoint(user_input_,model_data_,end_date_):
-   # This fuction creates a single datapoint from user input 
-   X_ = model_data_.drop(columns=['price_in_euro'])
-   X_keys_ = np.array(X_.keys().to_list())
+   # This fuction creates a single datapoint from user input
    car_age_ = _car_age(end_date_,user_input_['registration_date'])
-   X_values_ = [[user_input_['power'],
-                 user_input_['transmission_type'],
-                 user_input_['fuel_type'],
-                 user_input_['mileage'],
-                 car_age_]]
-   X_ = pd.DataFrame(data=X_values_,columns=X_keys_)
+   X_ = pd.DataFrame([{
+      'power_ps':          user_input_['power'],
+      'transmission_type': user_input_['transmission_type'],
+      'fuel_type':         user_input_['fuel_type'],
+      'mileage_in_km':     user_input_['mileage'],
+      'car_age':           car_age_,
+   }])
    return X_
 
 def _write_prediction(prediction_,r2_score_,model_data_,mape_):

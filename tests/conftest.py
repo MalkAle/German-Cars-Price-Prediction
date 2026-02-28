@@ -23,15 +23,13 @@ sys.modules["streamlit"] = _st_mock
 @pytest.fixture
 def sample_model_data():
     """Minimal DataFrame that mirrors the columns present in a real model slice."""
-    # Column order must match the positional assignment in _datapoint:
-    # [power_ps, transmission_type, fuel_type, mileage_in_km, car_age]
     return pd.DataFrame({
         "price_in_euro":       [10000, 15000, 20000, 8000, 25000],
         "power_ps":            [100,   150,   200,   90,   250],
-        "transmission_type":   ["Manual", "Automatic", "Manual", "Automatic", "Manual"],
-        "fuel_type":           ["Gasoline", "Diesel", "Gasoline", "Electric", "Diesel"],
         "mileage_in_km":       [50000, 80000, 120000, 30000, 200000],
         "car_age":             [3.5,   5.0,   7.0,   2.0,   10.0],
+        "fuel_type":           ["Gasoline", "Diesel", "Gasoline", "Electric", "Diesel"],
+        "transmission_type":   ["Manual", "Automatic", "Manual", "Automatic", "Manual"],
     })
 
 

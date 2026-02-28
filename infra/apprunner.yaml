@@ -1,0 +1,103 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  App Runner infrastructure for the German Cars Price Prediction App.
+  Creates the ECR access role, App Runner service, and the deploy
+  permission on the existing Github Actions IAM role.
+
+  Deploy:
+    aws cloudformation deploy \
+      --region eu-central-1 \
+      --template-file infra/apprunner.yaml \
+      --stack-name german-cars-app \
+      --capabilities CAPABILITY_NAMED_IAM
+
+  Tear down:
+    aws cloudformation delete-stack \
+      --region eu-central-1 \
+      --stack-name german-cars-app
+
+Parameters:
+  ECRImageUri:
+    Type: String
+    Default: 339713185538.dkr.ecr.eu-central-1.amazonaws.com/german_cars_app:latest
+    Description: Full ECR image URI including tag
+
+  AppPort:
+    Type: String
+    Default: '8501'
+    Description: Port the Streamlit app listens on
+
+  Cpu:
+    Type: String
+    Default: '0.25 vCPU'
+    AllowedValues: ['0.25 vCPU', '0.5 vCPU', '1 vCPU']
+    Description: App Runner instance CPU
+
+  Memory:
+    Type: String
+    Default: '0.5 GB'
+    AllowedValues: ['0.5 GB', '1 GB', '2 GB']
+    Description: App Runner instance memory
+
+  GithubActionsRoleName:
+    Type: String
+    Default: Github-role
+    Description: Name of the existing IAM role used by GitHub Actions
+
+Resources:
+
+  # Allows App Runner to pull images from ECR
+  ECRAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: AppRunnerECRAccessRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: build.apprunner.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess
+
+  # The App Runner service
+  AppRunnerService:
+    Type: AWS::AppRunner::Service
+    Properties:
+      ServiceName: german_cars_app
+      SourceConfiguration:
+        AuthenticationConfiguration:
+          AccessRoleArn: !GetAtt ECRAccessRole.Arn
+        AutoDeploymentsEnabled: false
+        ImageRepository:
+          ImageIdentifier: !Ref ECRImageUri
+          ImageRepositoryType: ECR
+          ImageConfiguration:
+            Port: !Ref AppPort
+      InstanceConfiguration:
+        Cpu: !Ref Cpu
+        Memory: !Ref Memory
+
+  # Grants the GitHub Actions role permission to trigger App Runner deploys
+  GithubActionsDeployPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: AppRunnerDeploy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: apprunner:StartDeployment
+            Resource: !GetAtt AppRunnerService.ServiceArn
+      Roles:
+        - !Ref GithubActionsRoleName
+
+Outputs:
+  ServiceUrl:
+    Value: !GetAtt AppRunnerService.ServiceUrl
+    Description: App Runner service URL (HTTPS)
+
+  ServiceArn:
+    Value: !GetAtt AppRunnerService.ServiceArn
+    Description: App Runner service ARN — add this as APP_RUNNER_SERVICE_ARN in GitHub secrets

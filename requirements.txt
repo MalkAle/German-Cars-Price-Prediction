@@ -1,7 +1,9 @@
+boto3==1.34.69
 joblib==1.3.2
 numpy==1.22.3
 pandas==1.4.2
 plotly==5.18.0
+pyarrow==14.0.2
 python-dotenv==1.0.1
 python-dateutil==2.8.2
 requests==2.31.0

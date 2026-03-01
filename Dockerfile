@@ -19,13 +19,12 @@ WORKDIR /german_cars
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Copy project folders
+# Copy app
 COPY app ./app
-COPY eda ./eda
 
 EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
 
 # Run Streamlit from project root; app handles model path via Path(__file__)
-CMD ["streamlit", "run", "app/ger_cars_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "app/ger_cars_app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.enableCORS=false", "--server.enableXsrfProtection=false"]

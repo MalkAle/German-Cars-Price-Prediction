@@ -1,30 +1,30 @@
+# syntax=docker/dockerfile:1.4
 FROM python:3.9-slim
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
-    software-properties-common \
     git \
-    && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/*
 
-RUN --mount=type=secret,id=api_key \
-    --mount=type=secret,id=search_engine_id \
-    echo "API_KEY=$(cat /run/secrets/api_key)" >> .env && \
+RUN --mount=type=secret,id=api_key \ 
+    --mount=type=secret,id=search_engine_id \ 
+    echo "API_KEY=$(cat /run/secrets/api_key)" >> .env && \ 
     echo "SEARCH_ENGINE_ID=$(cat /run/secrets/search_engine_id)" >> .env
 
-#docker build --secret id=api_key,env=API_KEY --secret id=search_engine_id,env=SEARCH_ENGINE_ID --no-cache --progress=plain -t german-cars-app .
+# Project root inside the container
+WORKDIR /german_cars
 
-COPY Dockerfile requirements.txt /app /app/
-COPY requirements.txt /app/requirements.txt
+# Install dependencies
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-WORKDIR /app
-
-RUN pip3 install -r requirements.txt
+# Copy app
+COPY app ./app
 
 EXPOSE 8501
 
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
 
-WORKDIR /app
-
-CMD ["streamlit", "run", "ger_cars_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Run Streamlit from project root; app handles model path via Path(__file__)
+CMD ["streamlit", "run", "app/ger_cars_app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.enableCORS=false", "--server.enableXsrfProtection=false"]

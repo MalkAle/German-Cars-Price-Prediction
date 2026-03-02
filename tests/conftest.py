@@ -2,8 +2,8 @@
 Shared test configuration and fixtures.
 
 Streamlit is mocked at the sys.modules level before the app module is imported
-so that @st.cache_data becomes a no-op identity decorator and st.* calls in
-the module body don't require a running Streamlit server.
+so that @st.cache_data / @st.cache_resource become no-op identity decorators
+and st.* calls in the module body don't require a running Streamlit server.
 """
 import sys
 from datetime import date
@@ -14,7 +14,8 @@ import pytest
 
 # --- Mock streamlit before any app import ---
 _st_mock = MagicMock()
-_st_mock.cache_data = lambda func: func   # identity decorator
+_st_mock.cache_data = lambda func: func       # identity decorator
+_st_mock.cache_resource = lambda func: func   # identity decorator
 sys.modules["streamlit"] = _st_mock
 
 
@@ -31,30 +32,6 @@ def sample_model_data():
         "fuel_type":           ["Gasoline", "Diesel", "Gasoline", "Electric", "Diesel"],
         "transmission_type":   ["Manual", "Automatic", "Manual", "Automatic", "Manual"],
     })
-
-
-@pytest.fixture
-def loaded_data(sample_model_data):
-    """Mock of the complete_model.joblib dict structure."""
-    ml_model_mock = MagicMock()
-    ml_model_mock.predict.return_value = [12000]
-
-    return {
-        "models": {
-            "VW Golf": {
-                "ml_model": ml_model_mock,
-                "r2":        0.754321,
-                "mape":      0.123456,
-                "model_data": sample_model_data,
-            },
-            "BMW 3er": {
-                "ml_model": MagicMock(),
-                "r2":        0.902,
-                "mape":      0.089,
-                "model_data": sample_model_data.copy(),
-            },
-        }
-    }
 
 
 @pytest.fixture

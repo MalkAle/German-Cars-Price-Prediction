@@ -17,4 +17,5 @@ __pycache__/
 *.pyc
 .pytest_cache/
 
-
+#Claude
+CLAUDE.md

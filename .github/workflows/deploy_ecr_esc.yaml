@@ -6,6 +6,8 @@ on:
     paths:
       - 'app/**'
       - 'eda/**'
+      - 'Dockerfile'
+      - '.streamlit/**'
 
 env:
   API_KEY: ${{ secrets.API_KEY }}

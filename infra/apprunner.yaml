@@ -29,13 +29,13 @@ Parameters:
 
   Cpu:
     Type: String
-    Default: '0.5 vCPU'
+    Default: '1 vCPU'
     AllowedValues: ['0.25 vCPU', '0.5 vCPU', '1 vCPU']
     Description: App Runner instance CPU
 
   Memory:
     Type: String
-    Default: '1 GB'
+    Default: '2 GB'
     AllowedValues: ['0.5 GB', '1 GB', '2 GB']
     Description: App Runner instance memory
 

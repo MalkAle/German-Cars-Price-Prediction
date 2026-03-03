@@ -136,7 +136,10 @@ def _search_images(query_, num_images_):
                }
     images = []
     domains = []
-    search_response_ = requests.get(search_engine_url_, params=params_)
+    try:
+        search_response_ = requests.get(search_engine_url_, params=params_, timeout=10)
+    except requests.exceptions.RequestException:
+        return images
     if search_response_.status_code == 200:
         search_results_ = search_response_.json()['items']
         for item in search_results_:

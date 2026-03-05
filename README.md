@@ -2,7 +2,7 @@
 
 A Streamlit web application that predicts used car prices in Germany using K-Nearest Neighbor regression, trained on a 2023 Kaggle dataset.
 
-**Live deployment:** https://tbdbyxn5hy.eu-central-1.awsapprunner.com
+**Live deployment:** http://3.76.21.24:8501
 
 <img src="images/img1.png" alt="image" width="80%" height="auto" style="display: block; margin: 10px auto">
 <img src="images/img2.png" alt="image" width="80%" height="auto" style="display: block; margin: 10px auto">
@@ -22,15 +22,13 @@ A Streamlit web application that predicts used car prices in Germany using K-Nea
 │   ├── ger_cars_model.py     # Model training script
 │   ├── car_data.csv          # Raw dataset (not committed — large file)
 │   └── car_data_ML.csv       # Preprocessed dataset (not committed — large file)
-├── infra/
-│   └── apprunner.yaml        # CloudFormation template (App Runner + S3 + IAM)
 ├── tests/
 │   ├── conftest.py           # Shared fixtures and Streamlit mock
 │   ├── test_app.py           # Unit tests for app logic
 │   └── test_model_artifact.py# Structural tests for the trained model
 ├── .github/workflows/
 │   ├── test.yaml             # Run tests on push to dev / PR to main
-│   └── deploy_ecr_esc.yaml   # Build, push to ECR, deploy to App Runner on push to main
+│   └── deploy_ec2.yaml       # Build, push to ECR, deploy to EC2 on push to main
 ├── Dockerfile
 ├── pytest.ini
 └── requirements.txt
@@ -50,7 +48,7 @@ A Streamlit web application that predicts used car prices in Germany using K-Nea
 The model artifacts live in S3, not the repository. To regenerate and upload them:
 
 ```bash
-export S3_BUCKET=<your-bucket-name>  # output of CloudFormation stack
+export S3_BUCKET=german-cars-app-modelartifactsbucket-kiywmmyqtc9m
 cd eda
 python ger_cars_model.py
 ```
@@ -62,7 +60,7 @@ This reads `car_data_ML.csv`, trains the models, and uploads all artifacts to th
 Requires AWS credentials with S3 read access to the model artifacts bucket, and the `S3_BUCKET` environment variable set.
 
 ```bash
-export S3_BUCKET=<your-bucket-name>
+export S3_BUCKET=german-cars-app-modelartifactsbucket-kiywmmyqtc9m
 streamlit run app/ger_cars_app.py
 ```
 
@@ -85,16 +83,17 @@ docker build \
   --secret id=search_engine_id,env=SEARCH_ENGINE_ID \
   -t german_cars_app .
 
-docker run -p 8501:8501 -e S3_BUCKET=<your-bucket-name> german_cars_app
+docker run -p 8501:8501 -e S3_BUCKET=german-cars-app-modelartifactsbucket-kiywmmyqtc9m german_cars_app
 ```
 
 ## Deployment
 
-The app runs on **AWS App Runner** (eu-central-1), deployed via the CloudFormation stack in `infra/apprunner.yaml`.
+The app runs on an **AWS EC2 t3.micro** instance (eu-central-1, Elastic IP `3.76.21.24`) behind Docker. The EC2 instance has an IAM role with ECR and S3 read access; `S3_BUCKET` is passed as a runtime environment variable.
 
 CI/CD is handled by GitHub Actions:
 - Push to `dev` → runs the test suite
-- Push to `main` (with changes in `app/` or `eda/`) → runs tests, builds Docker image, pushes to ECR, triggers App Runner deployment
+- Push/merge to `main` (with changes in `app/`, `eda/`, `Dockerfile`, or `.streamlit/`) → runs tests, builds Docker image, pushes to ECR, SSH-deploys to EC2
+- Manual trigger available via `workflow_dispatch`
 
 ## Tests
 

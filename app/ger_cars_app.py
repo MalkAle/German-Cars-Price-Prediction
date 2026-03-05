@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from joblib import load
 from sigfig import round as rd_sigfig
 
+load_dotenv()
 
 S3_BUCKET = os.getenv('S3_BUCKET')
 
@@ -123,7 +124,6 @@ def _write_prediction(prediction_, r2_score_, model_data_, mape_):
 @st.cache_data
 def _search_images(query_, num_images_):
     # Searches for model images via Google Custom Search API
-    load_dotenv()
     api_key_ = os.getenv('API_KEY')
     search_engine_id_ = os.getenv('SEARCH_ENGINE_ID')
     search_engine_url_ = 'https://www.googleapis.com/customsearch/v1'
@@ -136,7 +136,10 @@ def _search_images(query_, num_images_):
                }
     images = []
     domains = []
-    search_response_ = requests.get(search_engine_url_, params=params_)
+    try:
+        search_response_ = requests.get(search_engine_url_, params=params_, timeout=10)
+    except requests.exceptions.RequestException:
+        return images
     if search_response_.status_code == 200:
         search_results_ = search_response_.json()['items']
         for item in search_results_:

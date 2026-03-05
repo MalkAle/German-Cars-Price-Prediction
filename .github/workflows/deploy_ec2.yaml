@@ -6,6 +6,8 @@ on:
     paths:
       - 'app/**'
       - 'eda/**'
+      - 'Dockerfile'
+      - '.streamlit/**'
   workflow_dispatch:
 
 env:

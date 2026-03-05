@@ -1,4 +1,4 @@
-name: Deploy to AWS App Runner
+name: Deploy to AWS EC2
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
       - 'eda/**'
       - 'Dockerfile'
       - '.streamlit/**'
+  workflow_dispatch:
 
 env:
   API_KEY: ${{ secrets.API_KEY }}
@@ -68,7 +69,22 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Deploy to App Runner
+      - name: Deploy to EC2
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          aws apprunner start-deployment \
-            --service-arn ${{ secrets.APP_RUNNER_SERVICE_ARN }}
+          echo "${{ secrets.EC2_SSH_KEY }}" > /tmp/ec2_key.pem
+          chmod 400 /tmp/ec2_key.pem
+          ssh -o StrictHostKeyChecking=no -i /tmp/ec2_key.pem ec2-user@${{ secrets.EC2_HOST }} "
+            aws ecr get-login-password --region eu-central-1 | \
+              docker login --username AWS --password-stdin $ECR_REGISTRY
+            docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest
+            docker stop german_cars_app 2>/dev/null || true
+            docker rm german_cars_app 2>/dev/null || true
+            docker run -d --name german_cars_app \
+              --restart unless-stopped \
+              -p 8501:8501 \
+              -e S3_BUCKET=german-cars-app-modelartifactsbucket-kiywmmyqtc9m \
+              $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          "
+          rm /tmp/ec2_key.pem
